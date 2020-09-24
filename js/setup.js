@@ -1,10 +1,5 @@
 "use strict";
 
-let userDialog = document.querySelector(`.setup`);
-let similarListElement = userDialog.querySelector(`.setup-similar-list`);
-let fragment = document.createDocumentFragment();
-let similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
-
 const NAMES = [
   `Иван`,
   `Хуан Себастьян`,
@@ -16,7 +11,7 @@ const NAMES = [
   `Вашингтон`
 ];
 
-const SURNAME = [
+const SURNAMES = [
   `да Марья`,
   `Верон`,
   `Мирабелла`,
@@ -44,6 +39,11 @@ const EYES_COLORS = [
   `green`
 ];
 
+let userDialog = document.querySelector(`.setup`);
+let similarListElement = userDialog.querySelector(`.setup-similar-list`);
+let fragment = document.createDocumentFragment();
+let similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
+
 userDialog.classList.remove(`hidden`);
 userDialog.querySelector(`.setup-similar`).classList.remove(`hidden`);
 
@@ -53,26 +53,25 @@ const getRandom = (arr) => {
 
 const createRandomWizard = () => {
   let randomWizard = {
-    name: `${getRandom(NAMES)}  ${getRandom(SURNAME)}`,
+    name: `${getRandom(NAMES)}  ${getRandom(SURNAMES)}`,
     coatColor: getRandom(COLORS),
     eyesColor: getRandom(EYES_COLORS)
   };
   return randomWizard;
 };
 
-const createWizardsArray = (quantity) => {
-  let wizardsArray = [];
+const createWizards = (quantity) => {
+  let wizards = [];
   let oneWizard = {};
   for (let i = 0; i < quantity; i++) {
-    oneWizard[i] = createRandomWizard();
-    wizardsArray.push(oneWizard[i]);
+    wizards.push(oneWizard[i] = createRandomWizard());
   }
-  return wizardsArray;
+  return wizards;
 };
 
-let wizards = createWizardsArray(4);
+let wizards = createWizards(4);
 
-const renderWizard = (wizard) => {
+const renderWizards = (wizard) => {
   let wizardElement = similarWizardTemplate.cloneNode(true);
 
   wizardElement.querySelector(`.setup-similar-label`).textContent = wizard.name;
@@ -82,8 +81,12 @@ const renderWizard = (wizard) => {
   return wizardElement;
 };
 
-for (let i = 0; i < wizards.length; i++) {
-  fragment.appendChild(renderWizard(wizards[i]));
-}
+const renderElements = (arr, element) => {
+  for (let i = 0; i < arr.length; i++) {
+    element.appendChild(renderWizards(arr[i]));
+  }
+  return element;
+};
 
-similarListElement.appendChild(fragment);
+
+similarListElement.appendChild(renderElements(wizards, fragment));
