@@ -180,7 +180,8 @@ wizardEyes.addEventListener(`click`, () => {
 });
 
 setupFireballWrap.addEventListener(`click`, () => {
-  setupFireballWrap.style.background = getRandom(FIREBALL_COLORS);
-  inputFireballColor.value = setupFireballWrap.style.background;
+  let fireballColor = getRandom(FIREBALL_COLORS);
+  setupFireballWrap.style.background = fireballColor;
+  inputFireballColor.value = fireballColor;
 });
 
