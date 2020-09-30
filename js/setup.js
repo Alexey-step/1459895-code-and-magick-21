@@ -56,10 +56,9 @@ const userDialog = document.querySelector(`.setup`);
 const similarListElement = userDialog.querySelector(`.setup-similar-list`);
 const fragment = document.createDocumentFragment();
 const similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
-const setupOpen = document.querySelector(`.setup-open`);
 const setup = document.querySelector(`.setup`);
+const setupOpen = document.querySelector(`.setup-open`);
 const setupClose = document.querySelector(`.setup-close`);
-const setupOpenIcon = setupOpen.querySelector(`.setup-open-icon`);
 const setupUserName = setup.querySelector(`.setup-user-name`);
 const setupWizard = setup.querySelector(`.setup-wizard`);
 const wizardCoat = setupWizard.querySelector(`.wizard-coat`);
@@ -69,7 +68,6 @@ const inputCoatColor = setup.querySelector(`input[name="coat-color"]`);
 const inputEyesColor = setup.querySelector(`input[name="eyes-color"]`);
 const inputFireballColor = setup.querySelector(`input[name="fireball-color"]`);
 
-userDialog.classList.remove(`hidden`);
 userDialog.querySelector(`.setup-similar`).classList.remove(`hidden`);
 
 const getRandom = (arr) => {
@@ -149,7 +147,7 @@ setupClose.addEventListener(`keydown`, (evt) => {
   }
 });
 
-setupOpenIcon.addEventListener(`keydown`, (evt) => {
+setupOpen.addEventListener(`keydown`, (evt) => {
   if (evt.key === `Enter`) {
     openPopup();
   }
@@ -169,19 +167,31 @@ setupUserName.addEventListener(`input`, () => {
   setupUserName.reportValidity();
 });
 
-wizardCoat.addEventListener(`click`, () => {
+const changeCoatColor = () => {
   wizardCoat.style.fill = getRandom(COLORS);
   inputCoatColor.value = wizardCoat.style.fill;
-});
+};
 
-wizardEyes.addEventListener(`click`, () => {
+const changeEyesColor = () => {
   wizardEyes.style.fill = getRandom(EYES_COLORS);
   inputEyesColor.value = wizardEyes.style.fill;
-});
+};
 
-setupFireballWrap.addEventListener(`click`, () => {
+const changeFireballColor = () => {
   let fireballColor = getRandom(FIREBALL_COLORS);
   setupFireballWrap.style.background = fireballColor;
   inputFireballColor.value = fireballColor;
+};
+
+wizardCoat.addEventListener(`click`, () => {
+  changeCoatColor();
+});
+
+wizardEyes.addEventListener(`click`, () => {
+  changeEyesColor();
+});
+
+setupFireballWrap.addEventListener(`click`, () => {
+  changeFireballColor();
 });
 
