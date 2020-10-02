@@ -39,13 +39,30 @@ const EYES_COLORS = [
   `green`
 ];
 
-let userDialog = document.querySelector(`.setup`);
-let similarListElement = userDialog.querySelector(`.setup-similar-list`);
-let fragment = document.createDocumentFragment();
-let similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
+const FIREBALL_COLORS = [
+  `#ee4830`,
+  `#30a8ee`,
+  `#5ce6c0`,
+  `#e848d5`,
+  `#e6e848`
+];
 
-userDialog.classList.remove(`hidden`);
-userDialog.querySelector(`.setup-similar`).classList.remove(`hidden`);
+const MIN_NAME_LENGTH = 2;
+
+const userDialog = document.querySelector(`.setup`);
+const similarListElement = userDialog.querySelector(`.setup-similar-list`);
+const similarWizardTemplate = document.querySelector(`#similar-wizard-template`).content.querySelector(`.setup-similar-item`);
+const setup = document.querySelector(`.setup`);
+const setupOpen = document.querySelector(`.setup-open`);
+const setupClose = document.querySelector(`.setup-close`);
+const setupUserName = setup.querySelector(`.setup-user-name`);
+const setupWizard = setup.querySelector(`.setup-wizard`);
+const wizardCoat = setupWizard.querySelector(`.wizard-coat`);
+const wizardEyes = setupWizard.querySelector(`.wizard-eyes`);
+const setupFireballWrap = setup.querySelector(`.setup-fireball-wrap`);
+const inputCoatColor = setup.querySelector(`input[name="coat-color"]`);
+const inputEyesColor = setup.querySelector(`input[name="eyes-color"]`);
+const inputFireballColor = setup.querySelector(`input[name="fireball-color"]`);
 
 const getRandom = (arr) => {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -81,12 +98,84 @@ const renderWizards = (wizard) => {
   return wizardElement;
 };
 
-const renderElements = (arr, element) => {
+const renderElements = (arr) => {
+  let fragment = document.createDocumentFragment();
   for (let i = 0; i < arr.length; i++) {
-    element.appendChild(renderWizards(arr[i]));
+    fragment.appendChild(renderWizards(arr[i]));
   }
-  return element;
+  return fragment;
 };
 
+const onPopupEscPress = (evt) => {
+  if (evt.key === `Escape` && setupUserName !== document.activeElement) {
+    evt.preventDefault();
+    closePopup();
+  }
+};
 
-similarListElement.appendChild(renderElements(wizards, fragment));
+const openPopup = () => {
+  setup.classList.remove(`hidden`);
+  setupOpen.setAttribute(`disabled`, `disabled`);
+
+  document.addEventListener(`keydown`, onPopupEscPress);
+};
+
+const closePopup = () => {
+  setup.classList.add(`hidden`);
+  setupOpen.removeAttribute(`disabled`);
+
+  document.removeEventListener(`keydown`, onPopupEscPress);
+};
+
+const changeCoatColor = () => {
+  wizardCoat.style.fill = getRandom(COLORS);
+  inputCoatColor.value = wizardCoat.style.fill;
+};
+
+const changeEyesColor = () => {
+  wizardEyes.style.fill = getRandom(EYES_COLORS);
+  inputEyesColor.value = wizardEyes.style.fill;
+};
+
+const changeFireballColor = () => {
+  const fireballColor = getRandom(FIREBALL_COLORS);
+  setupFireballWrap.style.background = fireballColor;
+  inputFireballColor.value = fireballColor;
+};
+
+wizardCoat.addEventListener(`click`, changeCoatColor);
+
+wizardEyes.addEventListener(`click`, changeEyesColor);
+
+setupFireballWrap.addEventListener(`click`, changeFireballColor);
+
+setupOpen.addEventListener(`click`, openPopup);
+
+setupClose.addEventListener(`click`, closePopup);
+
+setupClose.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
+    closePopup();
+  }
+});
+
+setupOpen.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
+    openPopup();
+  }
+});
+
+setupUserName.addEventListener(`input`, () => {
+  let valueLength = setupUserName.value.length;
+
+  if (valueLength < MIN_NAME_LENGTH) {
+    setupUserName.setCustomValidity(`Еще ${MIN_NAME_LENGTH - valueLength} симв.`);
+  } else {
+    setupUserName.setCustomValidity(``);
+  }
+
+  setupUserName.reportValidity();
+});
+
+userDialog.querySelector(`.setup-similar`).classList.remove(`hidden`);
+similarListElement.appendChild(renderElements(wizards));
